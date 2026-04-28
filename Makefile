@@ -17,8 +17,7 @@ LDFLAGS := -nostdlib -static -pie --no-dynamic-linker -z text -z max-page-size=0
 all: $(ISO)
 
 limine:
-	@if [ ! -d "limine" ]; then \
-		git clone https://github.com/limine-bootloader/limine.git --branch=v8.x-binary --depth=1; \
+	@if [ ! -f "limine/limine" ]; then \
 		make -C limine; \
 	fi
 
