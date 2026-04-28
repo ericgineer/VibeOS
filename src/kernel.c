@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 #include "limine.h"
 
 // Set the base revision to 2, this is recommended.
