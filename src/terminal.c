@@ -64,3 +64,16 @@ void terminal_print(const char *str) {
         terminal_putchar(str[i]);
     }
 }
+
+void terminal_print_hex(uint64_t val) {
+    char buf[17];
+    buf[16] = '\0';
+    for (int i = 15; i >= 0; i--) {
+        int nibble = val & 0xF;
+        if (nibble < 10) buf[i] = '0' + nibble;
+        else buf[i] = 'A' + (nibble - 10);
+        val >>= 4;
+    }
+    terminal_print("0x");
+    terminal_print(buf);
+}

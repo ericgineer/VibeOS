@@ -27,8 +27,20 @@ src/kernel.o: src/kernel.c limine
 src/terminal.o: src/terminal.c src/terminal.h src/font.h limine
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL): src/kernel.o src/terminal.o src/linker.ld
-	$(LD) $(LDFLAGS) src/kernel.o src/terminal.o -o $@
+src/gdt.o: src/gdt.c src/gdt.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+src/idt.o: src/idt.c src/idt.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+src/isr.o: src/isr.c src/isr.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+src/isr_stubs.o: src/isr_stubs.S
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(KERNEL): src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/linker.ld
+	$(LD) $(LDFLAGS) src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o -o $@
 
 $(ISO): $(KERNEL) limine limine.cfg
 	rm -rf iso_root
