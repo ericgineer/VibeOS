@@ -10,7 +10,7 @@ CFLAGS := -Wall -Wextra -O2 -pipe \
           -mno-80387 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone -mcmodel=kernel \
           -I./limine
 
-LDFLAGS := -nostdlib -static -pie --no-dynamic-linker -z text -z max-page-size=0x1000 -T src/linker.ld
+LDFLAGS := -nostdlib -static -z max-page-size=0x1000 -T src/linker.ld
 
 .PHONY: all limine run clean
 
@@ -24,8 +24,11 @@ limine:
 src/kernel.o: src/kernel.c limine
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL): src/kernel.o src/linker.ld
-	$(LD) $(LDFLAGS) src/kernel.o -o $@
+src/terminal.o: src/terminal.c src/terminal.h src/font.h limine
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(KERNEL): src/kernel.o src/terminal.o src/linker.ld
+	$(LD) $(LDFLAGS) src/kernel.o src/terminal.o -o $@
 
 $(ISO): $(KERNEL) limine limine.cfg
 	rm -rf iso_root
@@ -45,4 +48,4 @@ run: $(ISO)
 	qemu-system-x86_64 -m 2G -M q35 -cdrom $(ISO) -boot d
 
 clean:
-	rm -rf src/*.o $(KERNEL) $(ISO) iso_root limine
+	rm -rf src/*.o $(KERNEL) $(ISO) iso_root

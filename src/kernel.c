@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include "limine.h"
+#include "terminal.h"
 
 // Set the base revision to 2, this is recommended.
 LIMINE_BASE_REVISION(2)
@@ -36,24 +37,15 @@ void _start(void) {
     // Fetch the first framebuffer.
     struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
 
-    // Note: we assume the framebuffer model is RGB with 32-bit pixels.
-    uint32_t *fb_ptr = framebuffer->address;
+    // Initialize the terminal renderer
+    terminal_init(framebuffer);
 
-    // Draw a green square in the top-left corner
-    for (size_t i = 0; i < 200; i++) {
-        for (size_t j = 0; j < 200; j++) {
-            uint32_t *pixel = fb_ptr + framebuffer->pitch / 4 * i + j;
-            *pixel = 0x00FF00; // Green
-        }
-    }
-
-    // Draw a blue square next to it
-    for (size_t i = 0; i < 200; i++) {
-        for (size_t j = 200; j < 400; j++) {
-            uint32_t *pixel = fb_ptr + framebuffer->pitch / 4 * i + j;
-            *pixel = 0x0000FF; // Blue
-        }
-    }
+    // Print a welcome message!
+    terminal_print("Hello, VibeOS!\n");
+    terminal_print("Text rendering is online and working pixel by pixel.\n");
+    terminal_print("ABCDEFGHIJKLMNOPQRSTUVWXYZ\n");
+    terminal_print("abcdefghijklmnopqrstuvwxyz\n");
+    terminal_print("0123456789 !@#$%^&*()\n");
 
     // We're done, just halt...
     hcf();
