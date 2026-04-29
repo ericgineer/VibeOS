@@ -39,8 +39,11 @@ src/isr.o: src/isr.c src/isr.h
 src/isr_stubs.o: src/isr_stubs.S
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL): src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/linker.ld
-	$(LD) $(LDFLAGS) src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o -o $@
+src/pmm.o: src/pmm.c src/pmm.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(KERNEL): src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o src/linker.ld
+	$(LD) $(LDFLAGS) src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o -o $@
 
 $(ISO): $(KERNEL) limine limine.cfg
 	rm -rf iso_root

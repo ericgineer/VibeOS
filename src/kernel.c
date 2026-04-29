@@ -5,6 +5,7 @@
 #include "terminal.h"
 #include "gdt.h"
 #include "idt.h"
+#include "pmm.h"
 
 // Set the base revision to 2, this is recommended.
 LIMINE_BASE_REVISION(2)
@@ -48,13 +49,24 @@ void _start(void) {
     terminal_print("Initializing IDT...\n");
     idt_init();
 
-    terminal_print("Triggering a Divide By Zero Exception to test IDT...\n");
-    
-    // Trigger divide by zero
-    volatile int a = 1;
-    volatile int b = 0;
-    volatile int c = a / b;
-    (void)c;
+    terminal_print("Initializing PMM...\n");
+    pmm_init();
+
+    // Test PMM
+    void *page1 = pmm_alloc_page();
+    void *page2 = pmm_alloc_page();
+
+    terminal_print("Allocated Page 1 at: ");
+    terminal_print_hex((uint64_t)page1);
+    terminal_print("\n");
+
+    terminal_print("Allocated Page 2 at: ");
+    terminal_print_hex((uint64_t)page2);
+    terminal_print("\n");
+
+    pmm_free_page(page1);
+    pmm_free_page(page2);
+    terminal_print("Pages freed successfully.\n");
 
     // We're done, just halt...
     hcf();
