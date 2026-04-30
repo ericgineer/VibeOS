@@ -1,6 +1,7 @@
 #include "keyboard.h"
 #include "io.h"
 #include "terminal.h"
+#include "shell.h"
 
 // Basic PS/2 Set 1 US QWERTY lowercase map
 const char kbd_US[128] = {
@@ -18,7 +19,7 @@ void keyboard_handler(void) {
     if (!(scancode & 0x80)) {
         char c = kbd_US[scancode];
         if (c) {
-            terminal_putchar(c);
+            shell_handle_input(c);
         }
     }
 }

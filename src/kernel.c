@@ -9,6 +9,7 @@
 #include "vmm.h"
 #include "pic.h"
 #include "keyboard.h"
+#include "shell.h"
 
 // Set the base revision to 2, this is recommended.
 LIMINE_BASE_REVISION(2)
@@ -65,7 +66,7 @@ void _start(void) {
     terminal_print("Initializing Keyboard...\n");
     keyboard_init();
 
-    terminal_print("\nVibeOS is now running. Try typing something!\n> ");
+    shell_init();
 
     // We're done initializing, enter infinite loop.
     // Make sure interrupts stay enabled so keyboard works.

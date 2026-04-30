@@ -51,8 +51,11 @@ src/pic.o: src/pic.c src/pic.h
 src/keyboard.o: src/keyboard.c src/keyboard.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL): src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o src/vmm.o src/pic.o src/keyboard.o src/linker.ld
-	$(LD) $(LDFLAGS) src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o src/vmm.o src/pic.o src/keyboard.o -o $@
+src/shell.o: src/shell.c src/shell.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(KERNEL): src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o src/vmm.o src/pic.o src/keyboard.o src/shell.o src/linker.ld
+	$(LD) $(LDFLAGS) src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o src/vmm.o src/pic.o src/keyboard.o src/shell.o -o $@
 
 $(ISO): $(KERNEL) limine limine.cfg
 	rm -rf iso_root
