@@ -6,6 +6,9 @@
 #include "gdt.h"
 #include "idt.h"
 #include "pmm.h"
+#include "vmm.h"
+#include "pic.h"
+#include "keyboard.h"
 
 // Set the base revision to 2, this is recommended.
 LIMINE_BASE_REVISION(2)
@@ -52,22 +55,21 @@ void _start(void) {
     terminal_print("Initializing PMM...\n");
     pmm_init();
 
-    // Test PMM
-    void *page1 = pmm_alloc_page();
-    void *page2 = pmm_alloc_page();
+    terminal_print("Initializing VMM...\n");
+    vmm_init();
 
-    terminal_print("Allocated Page 1 at: ");
-    terminal_print_hex((uint64_t)page1);
-    terminal_print("\n");
+    terminal_print("Remapping PIC...\n");
+    pic_remap(32, 40);
+    pic_clear_masks(); // Unmask all IRQs
 
-    terminal_print("Allocated Page 2 at: ");
-    terminal_print_hex((uint64_t)page2);
-    terminal_print("\n");
+    terminal_print("Initializing Keyboard...\n");
+    keyboard_init();
 
-    pmm_free_page(page1);
-    pmm_free_page(page2);
-    terminal_print("Pages freed successfully.\n");
+    terminal_print("\nVibeOS is now running. Try typing something!\n> ");
 
-    // We're done, just halt...
-    hcf();
+    // We're done initializing, enter infinite loop.
+    // Make sure interrupts stay enabled so keyboard works.
+    for (;;) {
+        asm ("hlt");
+    }
 }

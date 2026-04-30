@@ -12,6 +12,8 @@ static volatile struct limine_hhdm_request hhdm_request = {
     .revision = 0
 };
 
+uint64_t pmm_hhdm_offset = 0;
+
 static uint8_t *bitmap = NULL;
 static size_t bitmap_size = 0;
 static size_t highest_page = 0;
@@ -37,7 +39,7 @@ void pmm_init(void) {
         return;
     }
 
-    uint64_t hhdm_offset = hhdm->offset;
+    pmm_hhdm_offset = hhdm->offset;
     uint64_t highest_addr = 0;
 
     // Find highest memory address
@@ -57,7 +59,7 @@ void pmm_init(void) {
     for (size_t i = 0; i < memmap->entry_count; i++) {
         struct limine_memmap_entry *entry = memmap->entries[i];
         if (entry->type == LIMINE_MEMMAP_USABLE && entry->length >= bitmap_size) {
-            bitmap = (uint8_t *)(entry->base + hhdm_offset);
+            bitmap = (uint8_t *)(entry->base + pmm_hhdm_offset);
             break;
         }
     }
@@ -83,7 +85,7 @@ void pmm_init(void) {
     }
 
     // Now re-reserve the memory used by the bitmap itself!
-    uint64_t bitmap_phys = (uint64_t)bitmap - hhdm_offset;
+    uint64_t bitmap_phys = (uint64_t)bitmap - pmm_hhdm_offset;
     for (uint64_t addr = bitmap_phys; addr < bitmap_phys + bitmap_size; addr += PAGE_SIZE) {
         bitmap_set(addr / PAGE_SIZE);
     }

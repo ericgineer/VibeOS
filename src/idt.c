@@ -34,7 +34,7 @@ void idt_init(void) {
     idtr.limit = sizeof(struct idt_entry) * 256 - 1;
     idtr.base = (uint64_t)&idt;
 
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 48; i++) {
         idt_set_gate(i, isr_stub_table[i], 0x08, 0x8E); // 0x8E = Interrupt Gate, ring 0
     }
 

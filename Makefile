@@ -42,8 +42,17 @@ src/isr_stubs.o: src/isr_stubs.S
 src/pmm.o: src/pmm.c src/pmm.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(KERNEL): src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o src/linker.ld
-	$(LD) $(LDFLAGS) src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o -o $@
+src/vmm.o: src/vmm.c src/vmm.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+src/pic.o: src/pic.c src/pic.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+src/keyboard.o: src/keyboard.c src/keyboard.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(KERNEL): src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o src/vmm.o src/pic.o src/keyboard.o src/linker.ld
+	$(LD) $(LDFLAGS) src/kernel.o src/terminal.o src/gdt.o src/idt.o src/isr.o src/isr_stubs.o src/pmm.o src/vmm.o src/pic.o src/keyboard.o -o $@
 
 $(ISO): $(KERNEL) limine limine.cfg
 	rm -rf iso_root

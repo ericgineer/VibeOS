@@ -44,6 +44,24 @@ isr_err_stub    29
 isr_err_stub    30
 isr_no_err_stub 31
 
+// IRQs
+isr_no_err_stub 32
+isr_no_err_stub 33
+isr_no_err_stub 34
+isr_no_err_stub 35
+isr_no_err_stub 36
+isr_no_err_stub 37
+isr_no_err_stub 38
+isr_no_err_stub 39
+isr_no_err_stub 40
+isr_no_err_stub 41
+isr_no_err_stub 42
+isr_no_err_stub 43
+isr_no_err_stub 44
+isr_no_err_stub 45
+isr_no_err_stub 46
+isr_no_err_stub 47
+
 .extern isr_handler
 
 isr_common_stub:
@@ -120,3 +138,19 @@ isr_stub_table:
     .quad isr29
     .quad isr30
     .quad isr31
+    .quad isr32
+    .quad isr33
+    .quad isr34
+    .quad isr35
+    .quad isr36
+    .quad isr37
+    .quad isr38
+    .quad isr39
+    .quad isr40
+    .quad isr41
+    .quad isr42
+    .quad isr43
+    .quad isr44
+    .quad isr45
+    .quad isr46
+    .quad isr47

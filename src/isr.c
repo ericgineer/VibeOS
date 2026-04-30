@@ -1,5 +1,7 @@
 #include "isr.h"
 #include "terminal.h"
+#include "keyboard.h"
+#include "pic.h"
 
 const char *exception_messages[] = {
     "Division By Zero",
@@ -37,6 +39,14 @@ const char *exception_messages[] = {
 };
 
 void isr_handler(struct registers *regs) {
+    if (regs->int_no >= 32 && regs->int_no <= 47) {
+        if (regs->int_no == 33) {
+            keyboard_handler();
+        }
+        pic_send_eoi(regs->int_no - 32);
+        return;
+    }
+
     terminal_print("\n*** KERNEL PANIC ***\n");
     if (regs->int_no < 32) {
         terminal_print(exception_messages[regs->int_no]);
